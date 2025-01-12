@@ -1,6 +1,6 @@
 export async function getDataHome(){
   try{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/objects/661493588eeb799dd185e10b?read_key=${process.env.READ_KEY}&depth=1&props=slug,title,metadata`, { next: { revalidate: 120 } })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/objects/672e6f5c1b927471f4a67536?pretty=true&read_key=${process.env.READ_KEY}&depth=1&props=slug,title,metadata`, { next: { revalidate: 120 } })
 
     if(!res.ok){
       throw new Error("Failed to fetch data")
@@ -26,4 +26,34 @@ export async function getSubMenu(){
   }catch(err){
     throw new Error("Failed to fetch menu data")
   }
+}
+
+export async function getItemBySlug(itemSlug: string){
+  const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/objects`
+
+  // Definindo o objeto de consulta pelo slug
+  const queryParams = new URLSearchParams({
+    query: JSON.stringify({
+      slug: itemSlug
+    }),
+    props: 'slug,title,content,metadata',
+    read_key: process.env.READ_KEY as string
+  })
+
+  const url = `${baseUrl}?${queryParams.toString()}`;
+
+  try{
+
+    const res = await fetch(url, { next: { revalidate: 120 } })
+
+    if(!res.ok){
+      throw new Error("Failed get item by slug")
+    }
+
+    return res.json();
+
+  }catch(err){
+    throw new Error("Failed get item by slug")
+  }
+
 }
